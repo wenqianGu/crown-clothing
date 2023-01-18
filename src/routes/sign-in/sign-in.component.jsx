@@ -1,9 +1,15 @@
-import {signInWithGooglePopup, createUserDocumentFromAuth} from '../../utils/firebase/firebase.utils'
+import {
+    signInWithGooglePopup,
+    createUserDocumentFromAuth,
+} from '../../utils/firebase/firebase.utils'
 
 const SignIn = () => {
+    // the useEffect will run this call back once on the mounting.
+    // inside the callback, get the response for the redirect just happened.
+    // how do we know the redirect happened? -> auth is helping us to keep track of all those authentication states
+
     const logGoogleUser = async () => {
         const {user} = await signInWithGooglePopup();
-        console.log(user);
         const userDocRef = await createUserDocumentFromAuth(user)
         // console.log(response);
     };

@@ -3,7 +3,7 @@ import {
     getAuth,
     signInWithRedirect,
     signInWithPopup,
-    GoogleAuthProvider
+    GoogleAuthProvider,
 } from 'firebase/auth'
 import {
     getFirestore,
@@ -24,21 +24,20 @@ const firebaseConfig = {
 // Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
 
-const provider = new GoogleAuthProvider();
+const googleProvider = new GoogleAuthProvider();
 
-provider.setCustomParameters({
+googleProvider.setCustomParameters({
     prompt: "select_account"
 });
 
 export const auth = getAuth();
-export const signInWithGooglePopup = () => signInWithPopup(auth, provider);
+export const signInWithGooglePopup = () => signInWithPopup(auth, googleProvider);
 
-const db = getFirestore();
+export const db = getFirestore();
 
 export const createUserDocumentFromAuth = async (userAuth) => {
     //db, collection, unique identifier
     const userDocRef = doc(db, 'users', userAuth.uid)
-    console.log(userDocRef)
 
     const userSnapshot = await getDoc(userDocRef);
     console.log(userSnapshot)
