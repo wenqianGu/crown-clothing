@@ -3,14 +3,15 @@
  *
  * */
 
-import {useState} from "react";
+import { useState } from "react";
 import {
     createAuthUserWithEmailAndPassword,
     createUserDocumentFromAuth,
-    signInWithGooglePopup
+    signInWithGooglePopup,
+    signInAuthUserWithEmailAndPassword
 } from "../../utils/firebase/firebase.utils";
 import FormInput from "../form-input/form-input.component";
-import './sigg-in-form.styles.scss'
+import './sign-in-form.styles.scss'
 import Button from "../button/button.component";
 //initial field value;
 const defaultFormFields = {
@@ -20,14 +21,14 @@ const defaultFormFields = {
 
 const SignInForm = () => {
     const [formFields, setFormFields] = useState(defaultFormFields);
-    const {email, password} = formFields;
+    const { email, password } = formFields;
 
     const resetFormFields = () => {
         setFormFields(defaultFormFields);
     }
 
     const signInWithGoogle = async () => {
-        const {user} = await signInWithGooglePopup();
+        const { user } = await signInWithGooglePopup();
         await createUserDocumentFromAuth(user)
         // console.log(response);
     }
@@ -36,14 +37,26 @@ const SignInForm = () => {
         event.preventDefault(); // no default action. we will handle all action.
 
         try {
+            const response = await signInAuthUserWithEmailAndPassword(email, password);
+            console.log(response);
             resetFormFields();
         } catch (error) {
+            switch (error.code) {
+                case 'auth/wrong-password':
+                    alert('incorrect password for email');
+                    break;
+                case 'auth/user-not-found':
+                    alert('no user associated with this email')
+                    break;
+                default:
+                    console.log(error);
+            }
         }
     };
 
     const handleChange = (event) => {
-        const {name, value} = event.target;
-        setFormFields({...formFields, [name]: value})
+        const { name, value } = event.target;
+        setFormFields({ ...formFields, [name]: value })
     }
 
     return (
@@ -67,10 +80,12 @@ const SignInForm = () => {
                     name="password"
                     value={password}
                 />
-                <Button type='submit'>Sign In</Button>
-                 <Button buttonType='google' onclick={signInWithGoogle}>
-                     Google sign in
-                 </Button>
+                <div className="buttons-container">
+                    <Button type='submit'>Sign In</Button>
+                    <Button type='button' buttonType='google' onClick={signInWithGoogle}>
+                        Google sign in
+                    </Button>
+                </div>
             </form>
         </div>
     )
