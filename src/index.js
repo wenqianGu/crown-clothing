@@ -8,7 +8,7 @@ import { UserProvider } from './contexts/user.context';
 
 import './index.scss';
 
-
+// anthing inside the UserProvider can access the user state (-> whole App)
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>

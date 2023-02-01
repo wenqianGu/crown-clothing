@@ -8,6 +8,8 @@ import {createAuthUserWithEmailAndPassword, createUserDocumentFromAuth} from "..
 import FormInput from "../form-input/form-input.component";
 import './sigg-up-form.styles.scss'
 import Button from "../button/button.component";
+
+
 //initial field value;
 const defaultFormFields = {
     displayName: '',
@@ -31,7 +33,11 @@ const SignUpForm = () => {
             return;
         }
         try {
-            const {user} = await createAuthUserWithEmailAndPassword(email, password);
+            const {user} = await createAuthUserWithEmailAndPassword(
+                email, 
+                password
+                );
+
             await createUserDocumentFromAuth(user, {displayName})
             resetFormFields();
         } catch (error) {
