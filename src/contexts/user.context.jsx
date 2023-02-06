@@ -5,23 +5,49 @@
  * 
  */
 
-import { useState } from "react";
-import { createContext } from "react";
+/**
+ * observe mode
+ * 
+ */
+
+import { useState, createContext, useEffect } from "react";
+
+import { onAuthStateChangedListener } from "../utils/firebase/firebase.utils";
+
+import { createUserDocumentFromAuth } from "../utils/firebase/firebase.utils";
 
 // default values 
 // as the actual value you want to access
 export const UserContext = createContext({
-
+    currentUser: null,
+    setCurrentUser: () => null,
 })
 
 // provider is the actual component.
 
 export const UserProvider = ({ children }) => {
     const [currentUser, setCurrentUser] = useState(null);
-    const value = {currentUser, setCurrentUser}
+    const value = { currentUser, setCurrentUser }
     // this provider allow all its {children} to access the state (currentUser / setCurrentUser)
+
+
+    // onAuthStateChangedListener（auth, callback）, this callback will be evoked, whenever the auth state was changed.
+    // if the component unmount, this won't need to be listener anymore
+    // sign out -> (user) null ; sign in -> (user)user object.
+    useEffect(() => {
+        const unsubscribe = onAuthStateChangedListener((user) => {
+            if (user) {
+                createUserDocumentFromAuth(user)
+            }
+            setCurrentUser(user);
+        })
+    }, [])
+
+
+
     return <UserContext.Provider value={value}>{children}</UserContext.Provider>
 }
+        await createUserDocumentFromAuth(user)
 
 //  <UserProvider>
 //     <App />
