@@ -1,20 +1,22 @@
 /**
  * we want to store the user state through context,
- * to pass the user login state in different component 
+ * to pass the user login state in different component
  * (sign in, purchase history, setting et )
- * 
+ *
  */
 
 /**
  * observe mode
- * 
+ *
  */
 
-import { useState, createContext, useEffect } from "react";
+import {useState, createContext, useEffect} from "react";
 
-import { onAuthStateChangedListener } from "../utils/firebase/firebase.utils";
+import {
+    onAuthStateChangedListener,
+    createUserDocumentFromAuth,
+} from "../utils/firebase/firebase.utils";
 
-import { createUserDocumentFromAuth } from "../utils/firebase/firebase.utils";
 
 // default values 
 // as the actual value you want to access
@@ -25,10 +27,10 @@ export const UserContext = createContext({
 
 // provider is the actual component.
 
-export const UserProvider = ({ children }) => {
+export const UserProvider = ({children}) => {
     const [currentUser, setCurrentUser] = useState(null);
-    const value = { currentUser, setCurrentUser }
-    // this provider allow all its {children} to access the state (currentUser / setCurrentUser)
+    const value = {currentUser, setCurrentUser}
+    // this provider allows all its {children} to access the state (currentUser / setCurrentUser)
 
 
     // onAuthStateChangedListener（auth, callback）, this callback will be evoked, whenever the auth state was changed.
@@ -41,13 +43,12 @@ export const UserProvider = ({ children }) => {
             }
             setCurrentUser(user);
         })
+        return unsubscribe;
     }, [])
-
 
 
     return <UserContext.Provider value={value}>{children}</UserContext.Provider>
 }
-        await createUserDocumentFromAuth(user)
 
 //  <UserProvider>
 //     <App />
